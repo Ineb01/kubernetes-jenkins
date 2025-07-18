@@ -22,7 +22,7 @@ metadata:
 spec:
   storageClassName: local-path
   volumeMode: Filesystem
-  volumeName: volume
+  volumeName: jenkins-pv-volume
   accessModes:
     - ReadWriteOnce
   resources:
