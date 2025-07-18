@@ -1,29 +1,18 @@
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: local-storage
-provisioner: kubernetes.io/no-provisioner
-volumeBindingMode: WaitForFirstConsumer
-
----
 apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: jenkins-pv-volume
-  labels:
-    type: local
+  namespace: applications
 spec:
-  storageClassName: local-storage
-  claimRef:
-    name: jenkins-pv-claim
-    namespace: applications
+  storageClassName: local-path
   capacity:
-    storage: 10Gi
+    storage: 5Gi
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
-  local:
-    path: /mnt/data
-
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: "/mnt/data"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -31,7 +20,9 @@ metadata:
   name: jenkins-pv-claim
   namespace: applications
 spec:
-  storageClassName: local-storage
+  storageClassName: local-path
+  volumeMode: Filesystem
+  volumeName: volume
   accessModes:
     - ReadWriteOnce
   resources:
